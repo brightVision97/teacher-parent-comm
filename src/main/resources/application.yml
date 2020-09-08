@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    #url: jdbc:postgresql://localhost:5432/comm_dev
+    url: jdbc:h2:mem:comm_dev_in_memory;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: comm_dev
+    password: comm_dev
+    driver-class-name: org.h2.Driver
