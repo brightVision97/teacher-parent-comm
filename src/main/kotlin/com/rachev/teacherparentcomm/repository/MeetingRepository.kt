@@ -1,11 +1,13 @@
 package com.rachev.teacherparentcomm.repository
 
 import com.rachev.teacherparentcomm.repository.models.MeetingModel
-import org.springframework.stereotype.Repository
+import com.rachev.teacherparentcomm.service.dto.out.Meeting
 
 /**
  * @author Ivan Rachev
  * @since 04/09/2020
  */
-@Repository
-interface MeetingRepository : BaseJpaRepository<MeetingModel>
+interface MeetingRepository : AbstractJpaRepository<MeetingModel> {
+
+    fun findByReferenceId(referenceId: String): Meeting
+}

@@ -6,8 +6,12 @@ import io.swagger.v3.oas.annotations.info.Info
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.scheduling.annotation.EnableAsync
+import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
+@EnableScheduling
+@EnableAsync
 @OpenAPIDefinition(
     tags = [
         Tag(name = "meetings", description = "Operations revolving around meetings"),

@@ -5,6 +5,7 @@ import com.rachev.teacherparentcomm.controller.form.MeetingForm
 import com.rachev.teacherparentcomm.service.MeetingService
 import com.rachev.teacherparentcomm.service.dto.`in`.MeetingIn
 import com.rachev.teacherparentcomm.util.Constants.Companion.BASE_URL
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,17 +22,19 @@ import javax.validation.Valid
 @RestController
 @RequestMapping(URL, produces = [MediaType.APPLICATION_JSON_VALUE])
 @Tag(name = "meetings")
-class MeetingController(
+internal class MeetingController(
     private val meetingService: MeetingService
 ) {
 
     companion object {
-        const val URL = "$BASE_URL/meeting"
+        const val URL = "$BASE_URL/meetings"
     }
 
+    @Operation(description = "Returns a list of all found meetings")
     @GetMapping("/all")
     fun find() = meetingService.findAll()
 
+    @Operation(description = "Initiates a new booked meeting")
     @PostMapping("/save")
     fun create(
         @RequestBody @Valid form: MeetingForm

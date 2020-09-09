@@ -13,5 +13,7 @@ interface MeetingService {
 
     fun findAll(): Flux<Meeting>
 
+    fun findByReferenceId(referenceId: String): Mono<Meeting>
+
     fun save(dto: MeetingIn): Mono<Meeting>
 }

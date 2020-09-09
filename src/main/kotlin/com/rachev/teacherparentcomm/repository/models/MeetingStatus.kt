@@ -7,17 +7,13 @@ import io.swagger.v3.oas.annotations.media.Schema
  * @since 08/09/2020
  */
 @Schema(description = "The status of a booked meeting")
-enum class MeetingStatus {
+enum class MeetingStatus(furtherInfo: String? = null) {
 
-    REJECTED,
+    REJECTED("The meeting request was rejected by one of the parties."),
 
-    POSTPONED,
+    DELAYED("The meeting has presumably been rescheduled."),
 
-    DELAYED,
-
-    APPROVED,
-
-    PENDING,
+    BOOKED("The meeting is set to take place in the near future."),
 
     ;
 }

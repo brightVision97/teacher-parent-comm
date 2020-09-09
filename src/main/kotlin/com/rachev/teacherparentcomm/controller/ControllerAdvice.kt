@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
  * @since 03/09/2020
  */
 @RestControllerAdvice
-class RestControllerAdvice {
+class ControllerAdvice {
 
     @ExceptionHandler(RuntimeException::class)
     fun handleRuntimeException(ex: RuntimeException) =

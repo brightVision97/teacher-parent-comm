@@ -10,7 +10,7 @@ import java.time.LocalDateTime
  * @author Ivan Rachev
  * @since 04/09/2020
  */
-class Meeting(
+data class Meeting(
 
     var title: String? = null,
 
