@@ -1,5 +1,6 @@
 package com.rachev.teacherparentcomm.repository.models
 
+import com.rachev.teacherparentcomm.service.dto.`in`.ParticipantIn
 import io.swagger.v3.oas.annotations.Hidden
 import javax.persistence.Embeddable
 
@@ -14,4 +15,18 @@ class MeetingParticipant(
     var type: MeetingParticipantType,
     var gender: ParticipantGender,
     var isInitiator: Boolean
-)
+) {
+
+    companion object {
+
+        fun map(dtoIn: ParticipantIn) =
+            with(dtoIn) {
+                MeetingParticipant(
+                    name = name,
+                    type = type,
+                    gender = gender,
+                    isInitiator = isInitiator!!
+                )
+            }
+    }
+}

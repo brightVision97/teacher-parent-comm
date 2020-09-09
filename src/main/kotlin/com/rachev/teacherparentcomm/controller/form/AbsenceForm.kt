@@ -47,12 +47,11 @@ data class AbsenceForm(
         var participant: MeetingParticipant,
 
         @Nullable
-        var subject: String? = null,
+        var subject: String?,
 
         @NotEmpty
         var students: MutableSet<StudentForm> = mutableSetOf(),
 
-        @Empty
         var writtenAbsences: MutableSet<AbsenceForm> = mutableSetOf()
     )
 

@@ -10,9 +10,5 @@ enum class ParticipantGender {
 
     FEMALE,
 
-    NON_BINARY,
-
-    UNKNOWN,
-
     ;
 }

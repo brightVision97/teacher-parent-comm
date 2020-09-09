@@ -38,26 +38,8 @@ data class StudentIn(
                             start = it.start,
                             end = it.end,
                             issuingTeacher = TeacherIn.map(it.issuingTeacher),
-                            reason = it.reason,
-                            student = StudentIn(
-                                participant = participant,
-                                parents = parents.map { p ->
-                                    ParentIn.map(p)
-                                }.toMutableSet(),
-                                absences = absences.map { a ->
-                                    AbsenceIn(
-                                        start = a.start,
-                                        end = a.end,
-                                        issuingTeacher = TeacherIn.map(a.issuingTeacher),
-                                        reason = a.reason,
-                                        student = with(form) {
-                                            StudentIn(
-                                                participant = participant,
-                                                parents = parents.map { pf ->
-                                                    ParentIn.map(pf)
-                                                }.toMutableSet())
-                                        })
-                                }.toMutableSet()))
+                            reason = it.reason
+                        )
                     }.toMutableSet())
             }
     }

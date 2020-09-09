@@ -35,8 +35,8 @@ internal class MeetingController(
     fun find() = meetingService.findAll()
 
     @Operation(description = "Initiates a new booked meeting")
-    @PostMapping("/save")
-    fun create(
+    @PostMapping("/bulk")
+    fun createOrUpdate(
         @RequestBody @Valid form: MeetingForm
-    ) = meetingService.save(MeetingIn.map(form))
+    ) = meetingService.createOrUpdate(MeetingIn.map(form))
 }

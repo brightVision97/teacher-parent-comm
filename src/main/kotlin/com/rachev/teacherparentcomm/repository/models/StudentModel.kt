@@ -19,18 +19,18 @@ class StudentModel(
     @Embedded
     val participant: MeetingParticipant,
 
-    @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
-    val parents: MutableSet<ParentModel> = hashSetOf(),
-
-    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY, mappedBy = "student")
-    val absences: MutableSet<AbsenceModel> = mutableSetOf()
-
-) : AbstractJpaPersistable<Long>() {
+    ) : AbstractJpaPersistable<Long>() {
 
     companion object {
         const val DEFAULT_PARENTS_COUNT = 2
         const val ONE_PARENT = 1
     }
+
+    @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    var parents: MutableSet<ParentModel> = hashSetOf()
+
+    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    var absences: MutableSet<AbsenceModel> = mutableSetOf()
 
     @Transient
     private val getParentsPair =

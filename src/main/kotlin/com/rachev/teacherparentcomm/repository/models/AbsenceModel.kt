@@ -19,20 +19,16 @@ import javax.persistence.Table
 @Schema(description = "A model class representing an absence of a student")
 class AbsenceModel(
 
-    val start: LocalDateTime,
+    var start: LocalDateTime,
 
-    val end: LocalDateTime,
+    var end: LocalDateTime,
 
     @Enumerated(value = EnumType.STRING)
     var reason: AbsenceReason,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
-    var issuingTeacher: TeacherModel? = null,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id")
-    var student: StudentModel? = null
+    var issuingTeacher: TeacherModel? = null
 
 ) : AbstractJpaPersistable<Long>() {
 
@@ -45,7 +41,6 @@ class AbsenceModel(
         if (end != other.end) return false
         if (issuingTeacher != other.issuingTeacher) return false
         if (reason != other.reason) return false
-        if (student != other.student) return false
 
         return true
     }
@@ -56,7 +51,6 @@ class AbsenceModel(
         result = 31 * result + end.hashCode()
         result = 31 * result + (issuingTeacher?.hashCode() ?: 0)
         result = 31 * result + reason.hashCode()
-        result = 31 * result + (student?.hashCode() ?: 0)
         return result
     }
 
@@ -65,7 +59,6 @@ class AbsenceModel(
             "end=$end, " +
             "issuingTeacher=$issuingTeacher, " +
             "reason=$reason, " +
-            "student=$student" +
             ")"
     }
 }

@@ -15,7 +15,7 @@ data class ParticipantIn(
     var name: String,
     var type: MeetingParticipantType,
     var gender: ParticipantGender,
-    var isInitiator: Boolean
+    var isInitiator: Boolean?
 ) {
 
     companion object {

@@ -9,5 +9,5 @@ import com.rachev.teacherparentcomm.service.dto.out.Meeting
  */
 interface MeetingRepository : AbstractJpaRepository<MeetingModel> {
 
-    fun findByReferenceId(referenceId: String): Meeting
+    fun findByReferenceId(referenceId: String): MeetingModel
 }

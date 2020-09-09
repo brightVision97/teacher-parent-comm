@@ -1,7 +1,7 @@
 package com.rachev.teacherparentcomm.service
 
-import com.rachev.teacherparentcomm.service.dto.out.Meeting
 import com.rachev.teacherparentcomm.service.dto.`in`.MeetingIn
+import com.rachev.teacherparentcomm.service.dto.out.Meeting
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -15,5 +15,5 @@ interface MeetingService {
 
     fun findByReferenceId(referenceId: String): Mono<Meeting>
 
-    fun save(dto: MeetingIn): Mono<Meeting>
+    fun createOrUpdate(dto: MeetingIn)
 }

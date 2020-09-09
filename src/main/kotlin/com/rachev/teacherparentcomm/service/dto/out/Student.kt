@@ -20,7 +20,10 @@ data class Student(
         fun map(model: StudentModel) =
             with(model) {
                 Student(
-                    participant = participant
+                    participant = participant,
+                    parents = parents.map {
+                        Parent(it.participant)
+                    }.toMutableSet()
                 ).apply {
                     this.parents.addAll(parents)
                 }

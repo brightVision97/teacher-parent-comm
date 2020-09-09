@@ -1,11 +1,15 @@
 package com.rachev.teacherparentcomm.service.impl
 
 import com.rachev.teacherparentcomm.repository.MeetingRepository
+import com.rachev.teacherparentcomm.repository.models.MeetingModel
+import com.rachev.teacherparentcomm.repository.models.MeetingParticipant
 import com.rachev.teacherparentcomm.service.MeetingService
 import com.rachev.teacherparentcomm.service.dto.`in`.MeetingIn
 import com.rachev.teacherparentcomm.service.dto.out.Meeting
 import com.rachev.teacherparentcomm.util.sort
+import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -17,6 +21,14 @@ import reactor.core.publisher.Mono
 class MeetingServiceImpl(
     private val meetingRepository: MeetingRepository
 ) : MeetingService {
+
+    companion object {
+
+        @Suppress("JAVA_CLASS_ON_COMPANION")
+        @JvmStatic
+        @JvmSynthetic
+        internal val logger = getLogger(javaClass.enclosingClass)
+    }
 
     override fun findAll() =
         Flux.fromIterable(
@@ -32,7 +44,54 @@ class MeetingServiceImpl(
             )
         )
 
-    override fun save(dto: MeetingIn): Mono<Meeting> {
-        TODO("Not yet implemented")
+    @Transactional
+    override fun createOrUpdate(dto: MeetingIn) {
+
+        val dbEntry = if (!dto.referenceId.isNullOrEmpty()) {
+            logger.debug("Trying to update existing meeting, referenceId='${dto.referenceId}'")
+            meetingRepository.findByReferenceId(dto.referenceId).apply {
+
+                title = if (title != dto.title) dto.title else title
+                start = if (start != dto.start) dto.start!! else start
+                end = if (end != dto.end) dto.end!! else end
+                status = if (status != dto.status) dto.status else status
+
+
+                if (!participants.isNullOrEmpty()) participants.clear()
+                participants = (participants union (dto.participants.map {
+                        MeetingParticipant(
+                            name = it.name,
+                            type = it.type,
+                            gender = it.gender,
+                            isInitiator = it.isInitiator ?: false
+                        )
+                    })).toMutableSet()
+            }
+        } else null
+
+        meetingRepository.save(dbEntry ?: buildMeeting(dto))
+    }
+
+    private final fun buildMeeting(dto: MeetingIn): MeetingModel {
+
+        return with(dto) {
+            MeetingModel(
+                start = start!!,
+                end = end!!,
+                title = title,
+                status = status
+            ).apply {
+                assert(participants.isEmpty())
+                participants.addAll(
+                    dto.participants.map {
+                        MeetingParticipant(
+                            name = it.name,
+                            type = it.type,
+                            gender = it.gender,
+                            isInitiator = it.isInitiator ?: false
+                        )
+                    })
+            }
+        }
     }
 }

@@ -2,8 +2,6 @@ package com.rachev.teacherparentcomm.service.impl
 
 import com.rachev.teacherparentcomm.repository.AbsenceRepository
 import com.rachev.teacherparentcomm.repository.models.AbsenceModel
-import com.rachev.teacherparentcomm.repository.models.ParentModel
-import com.rachev.teacherparentcomm.repository.models.StudentModel
 import com.rachev.teacherparentcomm.repository.models.TeacherModel
 import com.rachev.teacherparentcomm.service.AbsenceService
 import com.rachev.teacherparentcomm.service.dto.`in`.AbsenceIn
@@ -29,56 +27,20 @@ class AbsenceServiceImpl(
             }
         )
 
-    override fun save(dto: AbsenceIn): Mono<Absence> {
-        return Mono.just(
-            AbsenceModel(
-                start = dto.start,
-                end = dto.end,
-                student = StudentModel(participant = dto.student.participant).apply {
-                    parents.addAll(
-                        dto.student.parents.map {
-                            ParentModel(
-                                participant = participant,
-                                studentKids = it.studentKids.map { s ->
-                                    StudentModel(
-                                        participant = s.participant,
-                                        parents = s.parents.map { p ->
-                                            ParentModel(
-                                                participant = p.participant,
-                                                studentKids = p.studentKids.map {
-                                                    StudentModel(
-                                                        participant = participant,
-                                                        parents = parents,
-                                                        absences = absences
-                                                    )
-                                                }.toMutableSet())
-                                        }.toMutableSet()
-                                    )
-                                }.toMutableSet()
-                            )
-                        }.toMutableSet()
-                    )
-                    absences.addAll(
-                        dto.student.absences.map {
-                            AbsenceModel(
-                                start = it.start,
-                                end = it.end,
-                                reason = it.reason,
-                                student = StudentModel(
-                                    participant = participant,
-                                    parents = parents,
-                                    absences = absences
-                                )
-                            )
-                        }
-                    )
-                },
-                issuingTeacher = TeacherModel(
-                    dto.issuingTeacher.participant,
-                    dto.issuingTeacher.subject
-                ),
-                reason = dto.reason
-            )
-        ).map { Absence.map(it) }
-    }
+    override fun save(dto: AbsenceIn) =
+        with(dto) {
+            Mono.just(
+                AbsenceModel(
+                    start = start,
+                    end = end,
+                    issuingTeacher = TeacherModel(
+                        participant = issuingTeacher.participant,
+                        subject = issuingTeacher.subject
+                    ),
+                    reason = dto.reason
+                )
+            ).map {
+                Absence.map(it)
+            }
+        }
 }

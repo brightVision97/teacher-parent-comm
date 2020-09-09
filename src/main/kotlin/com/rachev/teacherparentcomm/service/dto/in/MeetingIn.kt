@@ -1,14 +1,9 @@
 package com.rachev.teacherparentcomm.service.dto.`in`
 
 import com.rachev.teacherparentcomm.controller.form.MeetingForm
-import com.rachev.teacherparentcomm.repository.models.MeetingParticipantType
 import com.rachev.teacherparentcomm.repository.models.MeetingStatus
-import com.rachev.teacherparentcomm.repository.models.ParticipantGender
 import io.swagger.v3.oas.annotations.Hidden
-import org.springframework.validation.annotation.Validated
 import java.time.LocalDateTime
-import javax.validation.constraints.NotEmpty
-import javax.validation.constraints.NotNull
 
 /**
  * @author Ivan Rachev
@@ -16,6 +11,7 @@ import javax.validation.constraints.NotNull
  */
 @Hidden
 data class MeetingIn(
+    val referenceId: String? = null,
     val title: String,
     val start: LocalDateTime?,
     val end: LocalDateTime?,

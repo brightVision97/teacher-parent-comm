@@ -29,9 +29,11 @@ class MeetingModel(
     var end: LocalDateTime,
 
     @Enumerated(value = EnumType.STRING)
-    var status: MeetingStatus,
+    var status: MeetingStatus
 
-    @ElementCollection(fetch = FetchType.LAZY)
+) : AbstractJpaPersistable<Long>() {
+
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
         name = "meeting_meeting_participant",
         joinColumns = [
@@ -39,8 +41,6 @@ class MeetingModel(
         ]
     )
     var participants: MutableSet<MeetingParticipant> = mutableSetOf()
-
-) : AbstractJpaPersistable<Long>() {
 
     @Transient
     val additionalData: Collection<ByteArrayInputStream> = emptySet()

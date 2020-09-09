@@ -13,8 +13,7 @@ data class AbsenceIn(
     val start: LocalDateTime,
     val end: LocalDateTime,
     var issuingTeacher: TeacherIn,
-    var reason: AbsenceReason,
-    val student: StudentIn
+    var reason: AbsenceReason
 ) {
 
     companion object {
@@ -25,8 +24,7 @@ data class AbsenceIn(
                     start = start,
                     end = end,
                     issuingTeacher = TeacherIn.map(issuingTeacher!!),
-                    reason = reason,
-                    student = StudentIn.map(student!!)
+                    reason = reason
                 )
             }
 
@@ -36,8 +34,7 @@ data class AbsenceIn(
                     start = start,
                     end = end,
                     issuingTeacher = TeacherIn.map(issuingTeacher),
-                    reason = reason,
-                    student = StudentIn.map(student)
+                    reason = reason
                 )
             }
     }

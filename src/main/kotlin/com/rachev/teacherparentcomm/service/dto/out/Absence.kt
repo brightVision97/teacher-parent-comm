@@ -3,7 +3,6 @@ package com.rachev.teacherparentcomm.service.dto.out
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.rachev.teacherparentcomm.repository.models.AbsenceModel
 import com.rachev.teacherparentcomm.repository.models.AbsenceReason
-import com.rachev.teacherparentcomm.repository.models.StudentModel
 import com.rachev.teacherparentcomm.repository.models.TeacherModel
 import java.time.LocalDateTime
 
@@ -21,9 +20,7 @@ data class Absence(
 
     var issuingTeacher: TeacherModel,
 
-    var reason: AbsenceReason,
-
-    val student: StudentModel,
+    var reason: AbsenceReason
 ) {
 
     companion object {
@@ -34,8 +31,7 @@ data class Absence(
                     start = start,
                     end = end,
                     issuingTeacher = issuingTeacher!!,
-                    reason = reason,
-                    student = student!!
+                    reason = reason
                 )
             }
     }
