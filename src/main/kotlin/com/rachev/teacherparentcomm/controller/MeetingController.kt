@@ -6,6 +6,8 @@ import com.rachev.teacherparentcomm.service.MeetingService
 import com.rachev.teacherparentcomm.service.dto.`in`.MeetingIn
 import com.rachev.teacherparentcomm.util.Constants.Companion.BASE_URL
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -31,10 +33,22 @@ internal class MeetingController(
     }
 
     @Operation(description = "Returns a list of all found meetings")
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "200",
+            description = "Successfully list all meetings"
+        )
+    )
     @GetMapping("/all")
     fun find() = meetingService.findAll()
 
     @Operation(description = "Initiates a new booked meeting")
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "200",
+            description = "Successfully save the entity and return its json as response"
+        )
+    )
     @PostMapping("/bulk")
     fun createOrUpdate(
         @RequestBody @Valid form: MeetingForm

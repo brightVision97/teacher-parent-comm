@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.MediaType
-import org.springframework.web.bind.ServletRequestUtils
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -33,6 +32,12 @@ internal class AbsenceController(
     }
 
     @Operation(description = "Returns a list of all found absences")
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "200",
+            description = "Successfully return a list of all absences"
+        )
+    )
     @GetMapping("/all")
     fun find() = absenceService.findAll()
 
@@ -43,8 +48,8 @@ internal class AbsenceController(
             description = "Successfully save the entity and return its json as response"
         )
     )
-    @PostMapping("/save")
-    fun create(
+    @PostMapping("/bulk")
+    fun createOrUpdate(
         @RequestBody @Valid form: AbsenceForm
-    ) = absenceService.save(AbsenceIn.map(form))
+    ) = absenceService.createOrUpdate(AbsenceIn.map(form))
 }

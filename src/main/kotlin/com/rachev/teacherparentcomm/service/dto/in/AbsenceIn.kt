@@ -10,6 +10,7 @@ import java.time.LocalDateTime
  * @since 09/09/2020
  */
 data class AbsenceIn(
+    val referenceId: String? = null,
     val start: LocalDateTime,
     val end: LocalDateTime,
     var issuingTeacher: TeacherIn,
