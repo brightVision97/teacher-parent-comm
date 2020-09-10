@@ -6,6 +6,7 @@ import org.springframework.data.util.ProxyUtils
 import java.io.Serializable
 import java.util.UUID
 import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.MappedSuperclass
 
@@ -15,18 +16,18 @@ import javax.persistence.MappedSuperclass
  */
 @Immutable
 @MappedSuperclass
-abstract class AbstractJpaPersistable<E : Serializable> {
+abstract class AbstractJpaPersistable<E> where E : Serializable, E : Number {
 
     companion object {
         const val serialVersionUID = -5554308939380869754L
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private val id: E? = null
 
     @NaturalId
-    private val referenceId: String = UUID.randomUUID().toString()
+    private val referenceId: String? = UUID.randomUUID().toString()
 
     override fun equals(other: Any?): Boolean {
 
@@ -41,7 +42,5 @@ abstract class AbstractJpaPersistable<E : Serializable> {
         return true
     }
 
-    @Suppress("SENSELESS_COMPARISON")
-    override fun hashCode() =
-        referenceId.hashCode() ?: 0
+    override fun hashCode() = referenceId?.hashCode() ?: 0
 }

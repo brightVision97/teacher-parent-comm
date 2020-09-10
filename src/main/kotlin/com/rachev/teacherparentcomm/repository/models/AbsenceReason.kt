@@ -13,13 +13,9 @@ enum class AbsenceReason {
 
     SICK,
 
-    BETWEEN_TERMS_BREAK,
-
     VACATION,
 
-    NATIONAL_HOLIDAY,
-
-    OTHER_PERSONAL_REASON,
+    OTHER,
 
     ;
 }

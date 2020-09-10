@@ -39,7 +39,7 @@ internal class MeetingController(
             description = "Successfully list all meetings"
         )
     )
-    @GetMapping("/all")
+    @GetMapping
     fun find() = meetingService.findAll()
 
     @Operation(description = "Initiates a new booked meeting")

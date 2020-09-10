@@ -38,7 +38,7 @@ internal class AbsenceController(
             description = "Successfully return a list of all absences"
         )
     )
-    @GetMapping("/all")
+    @GetMapping
     fun find() = absenceService.findAll()
 
     @Operation(description = "Endpoint for persisting absences of students")

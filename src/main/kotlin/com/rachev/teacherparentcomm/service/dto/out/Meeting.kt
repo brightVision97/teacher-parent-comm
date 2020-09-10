@@ -28,27 +28,32 @@ data class Meeting(
         fun map(obj: Any) =
 
             when (obj) {
-                is MeetingModel -> Meeting(
-                    title = obj.title,
-                    start = obj.start,
-                    participants = obj.participants.map {
-                        Participant(
-                            it.name,
-                            it.type
-                        )
-                    }.toMutableSet()
-                )
-                is MeetingForm -> Meeting(
-                    title = obj.title,
-                    start = obj.start,
-                    end = obj.end,
-                    participants = obj.participants.map {
-                        Participant(
-                            it.name,
-                            it.type
-                        )
-                    }.toMutableSet()
-                )
+                is MeetingModel -> with(obj) {
+                    Meeting(
+                        title = title,
+                        start = start,
+                        end = end,
+                        participants = participants.map {
+                            Participant(
+                                name = it.name,
+                                type = it.type
+                            )
+                        }.toMutableSet()
+                    )
+                }
+                is MeetingForm -> with(obj) {
+                    Meeting(
+                        title = title,
+                        start = start,
+                        end = end,
+                        participants = participants.map {
+                            Participant(
+                                name = it.name,
+                                type = it.type
+                            )
+                        }.toMutableSet()
+                    )
+                }
                 else -> Any() as Meeting
             }
     }

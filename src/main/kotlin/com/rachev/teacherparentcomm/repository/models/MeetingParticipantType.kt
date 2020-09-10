@@ -15,7 +15,5 @@ enum class MeetingParticipantType {
 
     STUDENT,
 
-    UNKNOWN,
-
     ;
 }
