@@ -46,5 +46,5 @@ internal class AbsenceController(
     @PostMapping("/save")
     fun create(
         @RequestBody @Valid form: AbsenceForm
-    ) = absenceService.save(AbsenceIn.map(form))
+    ) = absenceService.createOrUpdate(AbsenceIn.map(form))
 }

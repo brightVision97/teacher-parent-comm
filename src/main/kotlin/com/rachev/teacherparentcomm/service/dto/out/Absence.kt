@@ -30,7 +30,10 @@ data class Absence(
                 Absence(
                     start = start,
                     end = end,
-                    issuingTeacher = issuingTeacher!!,
+                    issuingTeacher = TeacherModel(
+                        participant = issuingTeacher?.participant!!,
+                        subject = issuingTeacher?.subject
+                    ),
                     reason = reason
                 )
             }
