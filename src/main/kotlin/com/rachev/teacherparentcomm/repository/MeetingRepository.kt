@@ -1,7 +1,6 @@
 package com.rachev.teacherparentcomm.repository
 
 import com.rachev.teacherparentcomm.repository.models.MeetingModel
-import com.rachev.teacherparentcomm.service.dto.out.Meeting
 
 /**
  * @author Ivan Rachev

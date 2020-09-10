@@ -35,6 +35,7 @@ data class StudentIn(
                     }.toMutableSet(),
                     absences = absences.map {
                         AbsenceIn(
+                            referenceId = it.referenceId,
                             start = it.start,
                             end = it.end,
                             issuingTeacher = TeacherIn.map(it.issuingTeacher),

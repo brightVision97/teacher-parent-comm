@@ -12,6 +12,8 @@ import java.time.LocalDateTime
  */
 data class Meeting(
 
+    val referenceId: String,
+
     var title: String? = null,
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -30,6 +32,7 @@ data class Meeting(
             when (obj) {
                 is MeetingModel -> with(obj) {
                     Meeting(
+                        referenceId = referenceId,
                         title = title,
                         start = start,
                         end = end,
@@ -43,6 +46,7 @@ data class Meeting(
                 }
                 is MeetingForm -> with(obj) {
                     Meeting(
+                        referenceId = referenceId,
                         title = title,
                         start = start,
                         end = end,

@@ -20,6 +20,9 @@ import javax.validation.constraints.Size
 @Hidden
 data class AbsenceForm(
 
+    @Nullable
+    val referenceId: String,
+
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     val start: LocalDateTime,

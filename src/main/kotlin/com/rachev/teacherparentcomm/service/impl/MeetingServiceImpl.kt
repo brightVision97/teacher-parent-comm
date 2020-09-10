@@ -7,11 +7,14 @@ import com.rachev.teacherparentcomm.service.MeetingService
 import com.rachev.teacherparentcomm.service.dto.`in`.MeetingIn
 import com.rachev.teacherparentcomm.service.dto.out.Meeting
 import com.rachev.teacherparentcomm.util.sort
+import mu.KotlinLogging
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
+
+private val logger = KotlinLogging.logger { }
 
 /**
  * @author Ivan Rachev
@@ -43,25 +46,27 @@ class MeetingServiceImpl(
     @Transactional
     override fun createOrUpdate(dto: MeetingIn) {
 
-        val dbEntry = if (!dto.referenceId.isNullOrEmpty()) {
+        val dbEntry = if (dto.referenceId.isNotEmpty()) {
             logger.debug("Trying to update existing meeting, referenceId='${dto.referenceId}'")
-            meetingRepository.findByReferenceId(dto.referenceId).apply {
+            meetingRepository.findByReferenceId(dto.referenceId)
+        } else null
 
-                title = if (title === dto.title) title else dto.title
-                start = if (start === dto.start) start else dto.start!!
-                end = if (end === dto.end) end else dto.end!!
-                status = if (status === dto.status) status else dto.status
-                participants = (participants union (dto.participants.map {
+
+        dbEntry?.apply {
+            title = if (title == dto.title) title else dto.title
+            start = if (start == dto.start) start else dto.start!!
+            end = if (end == dto.end) end else dto.end!!
+            status = if (status == dto.status) status else dto.status
+            participants =
+                (participants union dto.participants.map {
                     MeetingParticipant(
                         name = it.name,
                         type = it.type,
                         gender = it.gender,
                         isInitiator = it.isInitiator ?: false
                     )
-                })).toMutableSet()
-            }
-        } else null
-
+                }).toMutableSet()
+        }
         meetingRepository.save(dbEntry ?: buildMeeting(dto))
     }
 

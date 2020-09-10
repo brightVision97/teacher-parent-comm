@@ -19,8 +19,7 @@ import javax.validation.constraints.NotNull
 @Hidden
 data class MeetingForm(
 
-    @field:Nullable
-    val referenceId: String? = null,
+    var referenceId: String,
 
     @NotEmpty
     val title: String,

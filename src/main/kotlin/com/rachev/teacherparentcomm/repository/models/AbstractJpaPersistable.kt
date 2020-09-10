@@ -1,6 +1,5 @@
 package com.rachev.teacherparentcomm.repository.models
 
-import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.NaturalId
 import org.springframework.data.util.ProxyUtils
 import java.io.Serializable
@@ -14,7 +13,6 @@ import javax.persistence.MappedSuperclass
  * @author Ivan Rachev
  * @since 08/09/2020
  */
-@Immutable
 @MappedSuperclass
 abstract class AbstractJpaPersistable<E> where E : Serializable, E : Number {
 
@@ -27,7 +25,7 @@ abstract class AbstractJpaPersistable<E> where E : Serializable, E : Number {
     private val id: E? = null
 
     @NaturalId
-    private val referenceId: String? = UUID.randomUUID().toString()
+    val referenceId: String = UUID.randomUUID().toString()
 
     override fun equals(other: Any?): Boolean {
 

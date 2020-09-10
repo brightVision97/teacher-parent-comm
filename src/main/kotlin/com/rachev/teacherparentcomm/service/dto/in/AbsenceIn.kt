@@ -10,7 +10,7 @@ import java.time.LocalDateTime
  * @since 09/09/2020
  */
 data class AbsenceIn(
-    val referenceId: String? = null,
+    val referenceId: String,
     val start: LocalDateTime,
     val end: LocalDateTime,
     var issuingTeacher: TeacherIn,
@@ -22,6 +22,7 @@ data class AbsenceIn(
         fun map(model: AbsenceModel): AbsenceIn =
             with(model) {
                 return AbsenceIn(
+                    referenceId = referenceId,
                     start = start,
                     end = end,
                     issuingTeacher = TeacherIn.map(issuingTeacher!!),
@@ -32,6 +33,7 @@ data class AbsenceIn(
         fun map(form: AbsenceForm): AbsenceIn =
             with(form) {
                 return AbsenceIn(
+                    referenceId = referenceId,
                     start = start,
                     end = end,
                     issuingTeacher = TeacherIn.map(issuingTeacher),

@@ -11,7 +11,7 @@ import java.time.LocalDateTime
  */
 @Hidden
 data class MeetingIn(
-    val referenceId: String? = null,
+    val referenceId: String,
     val title: String,
     val start: LocalDateTime?,
     val end: LocalDateTime?,
@@ -24,6 +24,7 @@ data class MeetingIn(
         fun map(form: MeetingForm) =
             with(form) {
                 MeetingIn(
+                    referenceId = referenceId,
                     title = title,
                     start = start,
                     end = end,
