@@ -1,11 +1,11 @@
 package com.rachev.teacherparentcomm.repository.models
 
 import javax.persistence.CascadeType
-import javax.persistence.Embedded
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.ManyToMany
 import javax.persistence.OneToMany
+import javax.persistence.OneToOne
 import javax.persistence.Table
 
 /**
@@ -16,23 +16,25 @@ import javax.persistence.Table
 @Table(name = "student")
 class StudentModel(
 
-    @Embedded
-    val participant: MeetingParticipant,
+    @OneToOne
+    val participant: ParticipantModel
 
-    ) : AbstractJpaPersistable<Long>() {
+) : AbstractJpaPersistable<Long>() {
 
     companion object {
         const val DEFAULT_PARENTS_COUNT = 2
         const val ONE_PARENT = 1
     }
 
-    @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, mappedBy = "studentKids")
     var parents: MutableSet<ParentModel> = hashSetOf()
 
-    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY, mappedBy = "student")
     var absences: MutableSet<AbsenceModel> = mutableSetOf()
 
-    @Transient
+    @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY, mappedBy = "students")
+    var teachers: MutableSet<TeacherModel> = mutableSetOf()
+
     private val getParentsPair =
         parents.takeUnless { it.size != DEFAULT_PARENTS_COUNT }?.let { _parents ->
             _parents.takeIf {

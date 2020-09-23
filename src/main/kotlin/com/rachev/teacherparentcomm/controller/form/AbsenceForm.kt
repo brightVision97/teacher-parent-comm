@@ -1,7 +1,6 @@
 package com.rachev.teacherparentcomm.controller.form
 
 import com.rachev.teacherparentcomm.repository.models.AbsenceReason
-import com.rachev.teacherparentcomm.repository.models.MeetingParticipant
 import io.swagger.v3.oas.annotations.Hidden
 import net.bytebuddy.implementation.bind.annotation.Empty
 import org.springframework.format.annotation.DateTimeFormat
@@ -21,7 +20,7 @@ import javax.validation.constraints.Size
 data class AbsenceForm(
 
     @Nullable
-    val referenceId: String,
+    val referenceId: String?,
 
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -30,9 +29,6 @@ data class AbsenceForm(
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     val end: LocalDateTime,
-
-    @NotNull
-    var issuingTeacher: TeacherForm,
 
     @NotNull
     var reason: AbsenceReason,
@@ -47,7 +43,7 @@ data class AbsenceForm(
     data class TeacherForm(
 
         @NotNull
-        var participant: MeetingParticipant,
+        var participant: MeetingForm.ParticipantForm,
 
         @Nullable
         var subject: String?,
@@ -63,7 +59,7 @@ data class AbsenceForm(
     data class StudentForm(
 
         @NotNull
-        val participant: MeetingParticipant,
+        val participant: MeetingForm.ParticipantForm,
 
         @NotEmpty
         @Size(min = 1, max = 2)
@@ -78,7 +74,7 @@ data class AbsenceForm(
     data class ParentForm(
 
         @NotNull
-        val participant: MeetingParticipant,
+        val participant: MeetingForm.ParticipantForm,
 
         var studentKids: MutableSet<StudentForm> = mutableSetOf()
     )

@@ -4,7 +4,10 @@ import javax.persistence.CascadeType
 import javax.persistence.Embedded
 import javax.persistence.Entity
 import javax.persistence.FetchType
+import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
+import javax.persistence.OneToOne
 import javax.persistence.Table
 
 /**
@@ -15,10 +18,15 @@ import javax.persistence.Table
 @Table(name = "parent")
 class ParentModel(
 
-    @Embedded
-    val participant: MeetingParticipant,
+    @OneToOne
+    val participant: ParticipantModel,
 
     @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "parent_student",
+        joinColumns = [JoinColumn(name = "student_id")],
+        inverseJoinColumns = [JoinColumn(name = "parent_id")]
+    )
     var studentKids: MutableSet<StudentModel> = mutableSetOf()
 
 ) : AbstractJpaPersistable<Long>() {

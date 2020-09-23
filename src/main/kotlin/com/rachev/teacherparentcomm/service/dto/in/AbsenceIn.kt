@@ -1,7 +1,7 @@
 package com.rachev.teacherparentcomm.service.dto.`in`
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.rachev.teacherparentcomm.controller.form.AbsenceForm
-import com.rachev.teacherparentcomm.repository.models.AbsenceModel
 import com.rachev.teacherparentcomm.repository.models.AbsenceReason
 import java.time.LocalDateTime
 
@@ -10,33 +10,26 @@ import java.time.LocalDateTime
  * @since 09/09/2020
  */
 data class AbsenceIn(
-    val referenceId: String,
+
+    val referenceId: String?,
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val start: LocalDateTime,
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val end: LocalDateTime,
-    var issuingTeacher: TeacherIn,
+
     var reason: AbsenceReason
 ) {
 
     companion object {
 
-        fun map(model: AbsenceModel): AbsenceIn =
-            with(model) {
-                return AbsenceIn(
+        fun map(dtoIn: AbsenceForm) =
+            with(dtoIn) {
+                AbsenceIn(
                     referenceId = referenceId,
                     start = start,
                     end = end,
-                    issuingTeacher = TeacherIn.map(issuingTeacher!!),
-                    reason = reason
-                )
-            }
-
-        fun map(form: AbsenceForm): AbsenceIn =
-            with(form) {
-                return AbsenceIn(
-                    referenceId = referenceId,
-                    start = start,
-                    end = end,
-                    issuingTeacher = TeacherIn.map(issuingTeacher),
                     reason = reason
                 )
             }

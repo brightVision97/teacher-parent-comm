@@ -1,9 +1,9 @@
 package com.rachev.teacherparentcomm.service.dto.out
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.rachev.teacherparentcomm.controller.form.MeetingForm
 import com.rachev.teacherparentcomm.repository.models.MeetingModel
-import com.rachev.teacherparentcomm.repository.models.MeetingParticipantType
+import com.rachev.teacherparentcomm.repository.models.MeetingRequestStatus
+import com.rachev.teacherparentcomm.service.dto.`in`.MeetingIn
 import java.time.LocalDateTime
 
 /**
@@ -12,17 +12,17 @@ import java.time.LocalDateTime
  */
 data class Meeting(
 
-    val referenceId: String,
+    val referenceId: String?,
 
-    var title: String? = null,
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    var start: LocalDateTime? = null,
+    var title: String?,
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    var end: LocalDateTime? = null,
+    var start: LocalDateTime,
 
-    var participants: MutableSet<Participant>
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    var end: LocalDateTime,
+
+    var participants: MutableSet<Participant> = mutableSetOf()
 ) {
 
     companion object {
@@ -37,24 +37,18 @@ data class Meeting(
                         start = start,
                         end = end,
                         participants = participants.map {
-                            Participant(
-                                name = it.name,
-                                type = it.type
-                            )
+                            Participant.map(it)
                         }.toMutableSet()
                     )
                 }
-                is MeetingForm -> with(obj) {
+                is MeetingIn -> with(obj) {
                     Meeting(
                         referenceId = referenceId,
                         title = title,
                         start = start,
                         end = end,
                         participants = participants.map {
-                            Participant(
-                                name = it.name,
-                                type = it.type
-                            )
+                            Participant.map(it)
                         }.toMutableSet()
                     )
                 }
@@ -62,8 +56,9 @@ data class Meeting(
             }
     }
 
-    data class Participant(
-        val name: String,
-        val type: MeetingParticipantType
+    data class MeetingRequest(
+        val initiator: Participant,
+        val addresant: Participant,
+        val status: MeetingRequestStatus
     )
 }

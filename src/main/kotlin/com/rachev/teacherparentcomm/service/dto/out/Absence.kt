@@ -3,7 +3,7 @@ package com.rachev.teacherparentcomm.service.dto.out
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.rachev.teacherparentcomm.repository.models.AbsenceModel
 import com.rachev.teacherparentcomm.repository.models.AbsenceReason
-import com.rachev.teacherparentcomm.repository.models.TeacherModel
+import com.rachev.teacherparentcomm.service.dto.`in`.AbsenceIn
 import java.time.LocalDateTime
 
 /**
@@ -12,13 +12,13 @@ import java.time.LocalDateTime
  */
 data class Absence(
 
+    val referenceId: String?,
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val start: LocalDateTime,
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val end: LocalDateTime,
-
-    var issuingTeacher: TeacherModel,
 
     var reason: AbsenceReason
 ) {
@@ -28,12 +28,19 @@ data class Absence(
         fun map(dtoIn: AbsenceModel) =
             with(dtoIn) {
                 Absence(
+                    referenceId = referenceId,
                     start = start,
                     end = end,
-                    issuingTeacher = TeacherModel(
-                        participant = issuingTeacher?.participant!!,
-                        subject = issuingTeacher?.subject
-                    ),
+                    reason = reason
+                )
+            }
+
+        fun map(dtoIn: AbsenceIn) =
+            with(dtoIn) {
+                Absence(
+                    referenceId = referenceId,
+                    start = start,
+                    end = end,
                     reason = reason
                 )
             }

@@ -1,47 +1,43 @@
 package com.rachev.teacherparentcomm.service.dto.`in`
 
-import com.rachev.teacherparentcomm.controller.form.AbsenceForm.StudentForm
-import com.rachev.teacherparentcomm.repository.models.MeetingParticipant
-import com.rachev.teacherparentcomm.repository.models.StudentModel
-import io.swagger.v3.oas.annotations.Hidden
+import com.rachev.teacherparentcomm.controller.form.AbsenceForm
 
 /**
  * @author Ivan Rachev
  * @since 09/09/2020
  */
-@Hidden
 data class StudentIn(
-    val participant: MeetingParticipant,
-    val parents: MutableSet<ParentIn> = mutableSetOf(),
-    val absences: MutableSet<AbsenceIn> = mutableSetOf()
+    val participant: ParticipantIn?,
+    val parents: MutableSet<ParentIn>? = mutableSetOf(),
+    val absences: MutableSet<AbsenceIn>? = mutableSetOf()
 ) {
 
     companion object {
 
-        fun map(model: StudentModel): StudentIn =
+        fun map(model: AbsenceForm.StudentForm) =
             with(model) {
                 StudentIn(
-                    participant = participant,
-                    parents = parents.map { ParentIn.map(it) }.toMutableSet()
-                )
-            }
-
-        fun map(form: StudentForm): StudentIn =
-            with(form) {
-                StudentIn(
-                    participant = participant,
+                    participant = ParticipantIn(
+                        referenceId = null,
+                        name = participant.name,
+                        type = participant.type,
+                        gender = participant.gender,
+                        isInitiator = participant.isInitiator
+                    ),
                     parents = parents.map {
-                        ParentIn.map(it)
-                    }.toMutableSet(),
-                    absences = absences.map {
-                        AbsenceIn(
-                            referenceId = it.referenceId,
-                            start = it.start,
-                            end = it.end,
-                            issuingTeacher = TeacherIn.map(it.issuingTeacher),
-                            reason = it.reason
+                        ParentIn(
+                            ParticipantIn(
+                                referenceId = null,
+                                name = participant.name,
+                                type = participant.type,
+                                gender = participant.gender,
+                                isInitiator = participant.isInitiator
+                            )
                         )
-                    }.toMutableSet())
+                    }.toMutableSet()
+                ).apply {
+                    this.parents?.addAll(parents)
+                }
             }
     }
 }

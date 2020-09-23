@@ -1,11 +1,13 @@
 package com.rachev.teacherparentcomm.repository.models
 
 import javax.persistence.CascadeType
-import javax.persistence.Embedded
 import javax.persistence.Entity
 import javax.persistence.FetchType
+import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
 import javax.persistence.OneToMany
+import javax.persistence.OneToOne
 import javax.persistence.Table
 
 /**
@@ -16,15 +18,20 @@ import javax.persistence.Table
 @Table(name = "teacher")
 class TeacherModel(
 
-    @Embedded
-    var participant: MeetingParticipant,
+    @OneToOne
+    val participant: ParticipantModel,
 
     var subject: String?,
 
     @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "student_teacher",
+        joinColumns = [JoinColumn(name = "teacher_id")],
+        inverseJoinColumns = [JoinColumn(name = "student_id")]
+    )
     var students: MutableSet<StudentModel> = mutableSetOf(),
 
-    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY, mappedBy = "issuingTeacher")
+    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     var writtenAbsences: Set<AbsenceModel> = mutableSetOf()
 
 ) : AbstractJpaPersistable<Long>() {

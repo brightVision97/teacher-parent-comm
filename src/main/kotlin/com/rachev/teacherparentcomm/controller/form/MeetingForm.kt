@@ -1,9 +1,8 @@
 package com.rachev.teacherparentcomm.controller.form
 
 import com.rachev.teacherparentcomm.repository.models.MeetingParticipantType
-import com.rachev.teacherparentcomm.repository.models.MeetingStatus
 import com.rachev.teacherparentcomm.repository.models.ParticipantGender
-import io.swagger.v3.oas.annotations.Hidden
+import com.rachev.teacherparentcomm.service.dto.out.Meeting
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.lang.Nullable
 import org.springframework.validation.annotation.Validated
@@ -16,30 +15,26 @@ import javax.validation.constraints.NotNull
  * @since 04/09/2020
  */
 @Validated
-@Hidden
 data class MeetingForm(
 
-    var referenceId: String,
+    @Nullable
+    var referenceId: String?,
 
     @NotEmpty
     val title: String,
 
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    val start: LocalDateTime?,
+    val start: LocalDateTime,
 
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    val end: LocalDateTime?,
-
-    @Nullable
-    val status: MeetingStatus,
+    val end: LocalDateTime,
 
     @NotEmpty
     val participants: Set<ParticipantForm>
 ) {
     @Validated
-    @Hidden
     data class ParticipantForm(
 
         @NotEmpty

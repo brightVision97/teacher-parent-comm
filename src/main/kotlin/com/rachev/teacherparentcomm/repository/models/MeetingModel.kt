@@ -4,13 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.io.ByteArrayInputStream
 import java.time.Duration
 import java.time.LocalDateTime
-import javax.persistence.CollectionTable
-import javax.persistence.ElementCollection
 import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.FetchType
-import javax.persistence.JoinColumn
+import javax.persistence.Index
+import javax.persistence.OneToMany
+import javax.persistence.OneToOne
 import javax.persistence.Table
 
 /**
@@ -18,32 +15,37 @@ import javax.persistence.Table
  * @since 04/09/2020
  */
 @Entity
-@Table(name = "meeting")
+@Table(
+    name = "meeting",
+    indexes = [
+        Index(
+            name = "meeting_referenceId__idx",
+            columnList = "referenceId",
+            unique = true
+        )
+    ]
+)
 @Schema(description = "A model representing a general meeting, regardless of participants")
 class MeetingModel(
 
-    var title: String,
+    var title: String?,
 
     var start: LocalDateTime,
 
-    var end: LocalDateTime,
-
-    @Enumerated(value = EnumType.STRING)
-    var status: MeetingStatus
+    var end: LocalDateTime
 
 ) : AbstractJpaPersistable<Long>() {
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(
-        name = "meeting_meeting_participant",
-        joinColumns = [
-            JoinColumn(name = "meeting_id")
-        ]
-    )
-    var participants: MutableSet<MeetingParticipant> = mutableSetOf()
+    @OneToMany
+    var participants: MutableSet<ParticipantModel> = mutableSetOf()
+
+    @OneToOne
+    var request: MeetingRequestModel? = null
 
     @Transient
     val additionalData: Collection<ByteArrayInputStream> = emptySet()
+
+    fun isApproved() = request?.status == MeetingRequestStatus.APPROVED
 
     fun getDuration() = Duration.between(start, end).toMinutes()
 
@@ -62,7 +64,6 @@ class MeetingModel(
         if (title != other.title) return false
         if (start != other.start) return false
         if (end != other.end) return false
-        if (status != other.status) return false
         if (participants != other.participants) return false
         if (additionalData != other.additionalData) return false
 
@@ -75,7 +76,6 @@ class MeetingModel(
         result = 31 * result + title.hashCode()
         result = 31 * result + start.hashCode()
         result = 31 * result + end.hashCode()
-        result = 31 * result + status.hashCode()
         result = 31 * result + participants.hashCode()
         result = 31 * result + additionalData.hashCode()
         return result
@@ -86,7 +86,6 @@ class MeetingModel(
         return "MeetingModel(title='$title', " +
             "start=$start, " +
             "end=$end, " +
-            "status=$status, " +
             "participants=$participants," +
             " additionalData=$additionalData" +
             ")"

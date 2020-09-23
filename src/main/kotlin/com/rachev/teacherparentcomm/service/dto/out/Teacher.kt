@@ -1,8 +1,5 @@
 package com.rachev.teacherparentcomm.service.dto.out
 
-import com.rachev.teacherparentcomm.repository.models.AbsenceModel
-import com.rachev.teacherparentcomm.repository.models.MeetingParticipant
-import com.rachev.teacherparentcomm.repository.models.StudentModel
 import com.rachev.teacherparentcomm.repository.models.TeacherModel
 import io.swagger.v3.oas.annotations.Hidden
 
@@ -12,10 +9,10 @@ import io.swagger.v3.oas.annotations.Hidden
  */
 @Hidden
 data class Teacher(
-    var participant: MeetingParticipant,
+    var participant: Participant,
     var subject: String?,
-    var students: MutableSet<StudentModel>,
-    var writtenAbsences: Set<AbsenceModel>
+    var students: MutableSet<Student> = mutableSetOf(),
+    var writtenAbsences: MutableSet<Absence> = mutableSetOf()
 ) {
 
     companion object {
@@ -23,10 +20,10 @@ data class Teacher(
         fun map(model: TeacherModel) =
             with(model) {
                 Teacher(
-                    participant = participant,
+                    participant = Participant.map(participant),
                     subject = subject,
-                    students = students,
-                    writtenAbsences = writtenAbsences
+                    students = students.map { Student.map(it) }.toMutableSet(),
+                    writtenAbsences = writtenAbsences.map { Absence.map(it) }.toMutableSet()
                 )
             }
     }

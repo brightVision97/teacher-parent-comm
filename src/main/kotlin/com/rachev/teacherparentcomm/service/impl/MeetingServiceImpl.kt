@@ -1,18 +1,22 @@
 package com.rachev.teacherparentcomm.service.impl
 
 import com.rachev.teacherparentcomm.repository.MeetingRepository
+import com.rachev.teacherparentcomm.repository.ParticipantRepository
 import com.rachev.teacherparentcomm.repository.models.MeetingModel
-import com.rachev.teacherparentcomm.repository.models.MeetingParticipant
+import com.rachev.teacherparentcomm.repository.models.ParticipantModel
 import com.rachev.teacherparentcomm.service.MeetingService
 import com.rachev.teacherparentcomm.service.dto.`in`.MeetingIn
+import com.rachev.teacherparentcomm.service.dto.`in`.ParticipantIn
 import com.rachev.teacherparentcomm.service.dto.out.Meeting
+import com.rachev.teacherparentcomm.service.listener.dto.MeetingRequestEvent
 import com.rachev.teacherparentcomm.util.sort
 import mu.KotlinLogging
-import org.slf4j.LoggerFactory.getLogger
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 private val logger = KotlinLogging.logger { }
 
@@ -23,74 +27,81 @@ private val logger = KotlinLogging.logger { }
 @Service
 @Primary
 class MeetingServiceImpl(
-    private val meetingRepository: MeetingRepository
+    private val meetingRepository: MeetingRepository,
+    private val participantRepository: ParticipantRepository,
+    private val eventPublisher: ApplicationEventPublisher
 ) : MeetingService {
 
-    companion object {
-
-        @Suppress("JAVA_CLASS_ON_COMPANION")
-        @JvmStatic
-        internal val logger = getLogger(javaClass.enclosingClass)
+    override fun findByReferenceId(referenceId: String?): MeetingModel? {
+        return meetingRepository.findByReferenceId(referenceId ?: "")
     }
 
-    override fun findAll() =
+    override fun findAll(): Flux<Meeting> =
         Flux.fromIterable(
-            meetingRepository.findAll(sort).map {
-                Meeting.map(it)
-            }
+            meetingRepository.findAll(sort).map { Meeting.map(it) }
         )
 
-    override fun findByReferenceId(referenceId: String) =
-        meetingRepository.findByReferenceId(referenceId)
-
     @Transactional
-    override fun createOrUpdate(dto: MeetingIn) {
+    override fun createOrUpdate(dto: MeetingIn): Mono<Meeting> {
 
-        val dbEntry = if (dto.referenceId.isNotEmpty()) {
+        val dbEntry = if (!dto.referenceId.isNullOrEmpty()) {
             logger.debug("Trying to update existing meeting, referenceId='${dto.referenceId}'")
             meetingRepository.findByReferenceId(dto.referenceId)
         } else null
 
+        validateInitiator(dto.participants)
 
         dbEntry?.apply {
             title = if (title == dto.title) title else dto.title
-            start = if (start == dto.start) start else dto.start!!
-            end = if (end == dto.end) end else dto.end!!
-            status = if (status == dto.status) status else dto.status
-            participants =
-                (participants union dto.participants.map {
-                    MeetingParticipant(
+            start = if (start == dto.start) start else dto.start
+            end = if (end == dto.end) end else dto.end
+            participants = (participants union dto.participants.map {
+                participantRepository.save(
+                    ParticipantModel(
                         name = it.name,
                         type = it.type,
                         gender = it.gender,
-                        isInitiator = it.isInitiator ?: false
+                        isInitiator = it.isInitiator
                     )
-                }).toMutableSet()
+                )
+            }).toMutableSet()
         }
-        meetingRepository.save(dbEntry ?: buildMeeting(dto))
+
+        val resultModel = dbEntry ?: buildMeeting(Meeting.map(dto))
+
+        eventPublisher.publishEvent(
+            MeetingRequestEvent(
+                initiatorReferenceId = resultModel.participants.find { it.isInitiator ?: false }?.referenceId,
+                addressantReferenceId = resultModel.participants.find { it.isInitiator?.not() ?: false }?.referenceId,
+                meetingReferenceId = dbEntry?.referenceId
+            )
+        )
+
+        return Mono.just(Meeting.map(meetingRepository.save(resultModel)))
     }
 
-    private final fun buildMeeting(dto: MeetingIn): MeetingModel {
+    private fun validateInitiator(participants: Set<ParticipantIn>) {
+        if (participants.count { it.isInitiator == true } > 1) throw IllegalStateException("Only 1 initiator is allowed")
+    }
 
-        return with(dto) {
+    private fun buildMeeting(dto: Meeting) =
+        with(dto) {
             MeetingModel(
-                start = start!!,
-                end = end!!,
+                start = start,
+                end = end,
                 title = title,
-                status = status
             ).apply {
-                assert(participants.isEmpty())
-                participants.addAll(
-                    dto.participants.map {
-                        MeetingParticipant(
+                participants = (participants union dto.participants.map {
+                    participantRepository.save(
+                        ParticipantModel(
                             name = it.name,
                             type = it.type,
                             gender = it.gender,
-                            isInitiator = it.isInitiator ?: false
+                            isInitiator = it.isInitiator
                         )
-                    }
-                )
+
+                    )
+                }).toMutableSet()
             }
         }
-    }
 }
